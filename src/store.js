@@ -1,12 +1,17 @@
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
 
-const initialState = {
+const accountInitialState = {
   isLoading: false,
   loan: 0,
   balance: 0,
 };
+const customerInitialState = {
+  fullname: '',
+  customerId: '',
+  createdAt: new Date().toISOString(),
+};
 
-function reducer(state = initialState, action) {
+function accountreducer(state = accountInitialState, action) {
   switch (action.type) {
     case 'account/loading':
       return {
@@ -44,8 +49,30 @@ function reducer(state = initialState, action) {
       return state;
   }
 }
+function customerreducer(state = customerInitialState, action) {
+  switch (action.type) {
+    case 'customer/createProfile':
+      return {
+        ...state,
+        fullname: action.payload.fullname,
+        customerId: action.payload.customerId,
+      };
+    case 'customer/updateProfile':
+      return {
+        ...state,
+        fullname: action.payload.fullname,
+      };
+    default:
+      return state;
+  }
+}
 
-const store = createStore(reducer);
+const rootReducer = {
+  account: accountreducer,
+  customer: customerreducer,
+};
+
+const store = createStore(combineReducers(rootReducer));
 
 function deposit(amount) {
   return {
@@ -71,6 +98,22 @@ function payloan() {
   };
 }
 
+function createProfile(fullname, customerId) {
+  return {
+    type: 'customer/createProfile',
+    payload: {
+      fullname,
+      customerId,
+    },
+  };
+}
+function updateProfile(fullname) {
+  return {
+    type: 'customer/updateProfile',
+    payload: { fullname },
+  };
+}
+
 store.dispatch(deposit(500));
 console.log(store.getState());
 store.dispatch(withdraw(200));
@@ -78,6 +121,11 @@ console.log(store.getState());
 store.dispatch(requestloan(1000));
 console.log(store.getState());
 store.dispatch(payloan());
+console.log(store.getState());
+
+store.dispatch(createProfile('John Doe', 12345));
+console.log(store.getState());
+store.dispatch(updateProfile('John Adams'));
 console.log(store.getState());
 
 export default store;
