@@ -54,18 +54,16 @@ export function deposit(amount, currency) {
       payload: amount,
     };
 
-  return function (dispatch, getState) {
-    fetch(
+  return async function (dispatch, getState) {
+    const res = await fetch(
       `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        dispatch({
-          type: 'account/deposit',
-          payload: data.rates.USD,
-        });
-      });
+    );
+    const data = await res.json();
+    console.log(data);
+    dispatch({
+      type: 'account/deposit',
+      payload: data.rates.USD,
+    });
   };
 }
 
