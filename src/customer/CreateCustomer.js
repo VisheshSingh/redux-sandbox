@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createProfile } from './customerSlice';
 
 function Customer() {
-  const [fullName, setFullName] = useState("");
-  const [nationalId, setNationalId] = useState("");
+  const [fullName, setFullName] = useState('');
+  const [nationalId, setNationalId] = useState('');
+  const dispatch = useDispatch();
 
-  function handleClick() {}
+  function handleClick() {
+    dispatch(createProfile(fullName, nationalId));
+  }
 
   return (
     <div>
       <h2>Create new customer</h2>
-      <div className="inputs">
+      <div className='inputs'>
         <div>
           <label>Customer full name</label>
           <input

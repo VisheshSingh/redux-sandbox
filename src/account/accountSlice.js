@@ -1,6 +1,7 @@
 const accountInitialState = {
   isLoading: false,
   loan: 0,
+  loanPurpose: '',
   balance: 0,
 };
 
@@ -12,6 +13,7 @@ export function accountreducer(state = accountInitialState, action) {
         isLoading: true,
       };
     case 'account/deposit':
+      console.log({ state, action });
       return {
         ...state,
         isLoading: false,
@@ -28,14 +30,16 @@ export function accountreducer(state = accountInitialState, action) {
       return {
         ...state,
         isLoading: false,
-        loan: action.payload,
-        balance: state.balance + action.payload,
+        loanPurpose: action.payload.purpose,
+        loan: action.payload.amount,
+        balance: state.balance + action.payload.amount,
       };
     case 'account/payloan':
       return {
         ...state,
         isLoading: false,
         loan: 0,
+        loanPurpose: '',
         balance: state.balance - state.loan,
       };
     default:
@@ -55,10 +59,13 @@ export function withdraw(amount) {
     payload: amount,
   };
 }
-export function requestloan(amount) {
+export function requestloan(amount, purpose) {
   return {
     type: 'account/requestloan',
-    payload: amount,
+    payload: {
+      amount,
+      purpose,
+    },
   };
 }
 export function payloan() {
